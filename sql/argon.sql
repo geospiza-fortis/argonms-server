@@ -88,7 +88,8 @@ CREATE TABLE `characters` (
   `exp` INT(11) NOT NULL DEFAULT 0,
   `fame` SMALLINT(6) NOT NULL DEFAULT 0,
   `spouse` INT(11) NOT NULL DEFAULT 0,
-  `map` INT(11) NOT NULL DEFAULT 0,
+  -- NOTE: we're spawning in sleepywood
+  `map` INT(11) NOT NULL DEFAULT 105040300,
   `spawnpoint` TINYINT(4) NOT NULL DEFAULT 0,
   `mesos` INT(11) NOT NULL DEFAULT 0,
   `equipslots` TINYINT(3) UNSIGNED NOT NULL DEFAULT 24,
