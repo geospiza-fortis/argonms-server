@@ -2,6 +2,10 @@
 
 set -e
 
-echo 'INSERT INTO accounts (id, name, password, salt, pin, gm)
-VALUES (0, "testing", "testing", "salt", "1234", 1);
-' | mysql -h db --password=testing argonms
+name=${1:-testing}
+password=${2:-password}
+gm=${3:-0}
+
+echo "INSERT IGNORE INTO accounts (name, password, gm)
+VALUES ('${name}', '${password}', ${gm});
+" | mysql -h db --password=testing argonms
