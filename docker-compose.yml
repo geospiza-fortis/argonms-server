@@ -54,7 +54,7 @@ services:
       - /app/target
     environment:
       - DATA_DIR=wz/
-      - SCRIPT_DIR
+      - SCRIPT_DIR=${SCRIPT_DIR:-scripts/example}
       - ARGONMS_GAME_0_HOST=${ARGONMS_GAME_0_HOST:-localhost}
     depends_on:
       - center
