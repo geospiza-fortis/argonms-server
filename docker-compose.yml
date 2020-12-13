@@ -55,6 +55,7 @@ services:
     environment:
       - DATA_DIR=wz/
       - SCRIPT_DIR
+      - ARGONMS_GAME_0_HOST=${ARGONMS_GAME_0_HOST:-localhost}
     depends_on:
       - center
       - db
