@@ -34,9 +34,9 @@ services:
     command: >
       bash -c "
         sleep 5 &&
-        mysql -h db --password=testing argonms < sql/argon.sql &&
-        mysql -h db --password=testing argonms < sql/default_reactor_drops.sql &&
-        mysql -h db --password=testing argonms < sql/default_shops.sql &&
+        bin/run_sql.sh < sql/argon.sql &&
+        bin/run_sql.sh < sql/default_reactor_drops.sql &&
+        bin/run_sql.sh < sql/default_shops.sql &&
         bin/launch_center.sh
       "
   login:
