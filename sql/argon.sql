@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS `accounts` (
   `storagemesos` INT(11) NOT NULL DEFAULT 0,
   `gm` TINYINT(4) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
-  KEY (`name`)
+  UNIQUE KEY (`name`)
 ) ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS `characters` (
