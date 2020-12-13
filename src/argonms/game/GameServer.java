@@ -60,12 +60,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Properties;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.configuration2.PropertiesConfiguration;
+import org.apache.commons.configuration2.ex.ConfigurationException;
 
 /**
  *
@@ -106,44 +107,44 @@ public class GameServer implements LocalServer {
 	}
 
 	public void init() {
-		Properties prop = new Properties();
+		PropertiesConfiguration prop = new PropertiesConfiguration();
 		String centerIp;
 		int centerPort;
 		String authKey;
 		String[] chList;
 		try {
 			FileReader fr = new FileReader(System.getProperty("argonms.game.config.file", "game" + serverId + ".properties"));
-			prop.load(fr);
+			prop.read(fr);
 			fr.close();
-			address = prop.getProperty("argonms.game." + serverId + ".host");
-			wzType = DataFileType.valueOf(prop.getProperty("argonms.game." + serverId + ".data.type"));
+			address = prop.getString("argonms.game." + serverId + ".host");
+			wzType = DataFileType.valueOf(prop.getString("argonms.game." + serverId + ".data.type"));
 			//wzPath = prop.getProperty("argonms.game." + serverId + ".data.dir");
-			preloadAll = Boolean.parseBoolean(prop.getProperty("argonms.game." + serverId + ".data.preload"));
-			world = Byte.parseByte(prop.getProperty("argonms.game." + serverId + ".world"));
-			chList = prop.getProperty("argonms.game." + serverId + ".channels").replaceAll("\\s", "").split(",");
+			preloadAll = prop.getBoolean("argonms.game." + serverId + ".data.preload");
+			world = prop.getByte("argonms.game." + serverId + ".world");
+			chList = prop.getString("argonms.game." + serverId + ".channels").replaceAll("\\s", "").split(",");
 
-			centerIp = prop.getProperty("argonms.game." + serverId + ".center.ip");
-			centerPort = Integer.parseInt(prop.getProperty("argonms.game." + serverId + ".center.port"));
-			authKey = prop.getProperty("argonms.game." + serverId + ".auth.key");
-			useNio = Boolean.parseBoolean(prop.getProperty("argonms.game." + serverId + ".usenio"));
+			centerIp = prop.getString("argonms.game." + serverId + ".center.ip");
+			centerPort = prop.getInt("argonms.game." + serverId + ".center.port");
+			authKey = prop.getString("argonms.game." + serverId + ".auth.key");
+			useNio = prop.getBoolean("argonms.game." + serverId + ".usenio");
 
-			registry.setExpRate(Short.parseShort(prop.getProperty("argonms.game." + serverId + ".exprate")));
-			registry.setMesoRate(Short.parseShort(prop.getProperty("argonms.game." + serverId + ".mesorate")));
-			registry.setDropRate(Short.parseShort(prop.getProperty("argonms.game." + serverId + ".droprate")));
-			registry.setItemsWillExpire(Boolean.parseBoolean(prop.getProperty("argonms.game." + serverId + ".itemexpire")));
-			registry.setBuffsWillCooldown(Boolean.parseBoolean(prop.getProperty("argonms.game." + serverId + ".enablecooltime")));
-			registry.setMultiLevel(Boolean.parseBoolean(prop.getProperty("argonms.game." + serverId + ".enablemultilevel")));
-			registry.setNewsTickerMessage(prop.getProperty("argonms.game." + serverId + ".tickermessage"));
+			registry.setExpRate(prop.getShort("argonms.game." + serverId + ".exprate"));
+			registry.setMesoRate(prop.getShort("argonms.game." + serverId + ".mesorate"));
+			registry.setDropRate(prop.getShort("argonms.game." + serverId + ".droprate"));
+			registry.setItemsWillExpire(prop.getBoolean("argonms.game." + serverId + ".itemexpire"));
+			registry.setBuffsWillCooldown(prop.getBoolean("argonms.game." + serverId + ".enablecooltime"));
+			registry.setMultiLevel(prop.getBoolean("argonms.game." + serverId + ".enablemultilevel"));
+			registry.setNewsTickerMessage(prop.getString("argonms.game." + serverId + ".tickermessage"));
 
-			String temp = prop.getProperty("argonms.game." + serverId + ".events").replaceAll("\\s", "");
+			String temp = prop.getString("argonms.game." + serverId + ".events").replaceAll("\\s", "");
 			initialEvents = temp.isEmpty() ? new String[0] : temp.split(",");
-			temp = prop.getProperty("argonms.game." + serverId + ".tz");
+			temp = prop.getString("argonms.game." + serverId + ".tz");
 			//always set default TimeZone setting last in this block so the
 			//timezone of logged messages that caught exceptions from this block
 			//are consistently inconsistent - i.e. they always use the server's
 			//time zone rather than the intended time zone from config.
 			TimeZone.setDefault(temp.isEmpty() ? TimeZone.getDefault() : TimeZone.getTimeZone(temp));
-		} catch (IOException ex) {
+		} catch (ConfigurationException|IOException ex) {
 			//Do note that the time shown by SimpleFormatter is the server's
 			//time zone, NOT any time zone we intended to use from the config
 			//(because we can't access the config after all!)
@@ -157,7 +158,7 @@ public class GameServer implements LocalServer {
 		channels = new HashMap<Byte, WorldChannel>(chList.length);
 		for (int i = 0; i < chList.length; i++) {
 			byte chNum = Byte.parseByte(chList[i]);
-			WorldChannel ch = new WorldChannel(world, chNum, Integer.parseInt(prop.getProperty("argonms.game." + serverId + ".channel." + chNum + ".port")));
+			WorldChannel ch = new WorldChannel(world, chNum, prop.getInt("argonms.game." + serverId + ".channel." + chNum + ".port"));
 			ch.createWorldComm();
 			channels.put(Byte.valueOf(chNum), ch);
 		}
@@ -168,13 +169,13 @@ public class GameServer implements LocalServer {
 		}
 
 		boolean mcdb = (wzType == DataFileType.MCDB);
-		prop = new Properties();
+		prop = new PropertiesConfiguration();
 		try {
 			FileReader fr = new FileReader(System.getProperty("argonms.db.config.file", "db.properties"));
-			prop.load(fr);
+			prop.read(fr);
 			fr.close();
 			DatabaseManager.setProps(prop, mcdb, useNio);
-		} catch (IOException ex) {
+		} catch (ConfigurationException|IOException ex) {
 			LOG.log(Level.SEVERE, "Could not load database properties!", ex);
 			System.exit(3);
 			return;

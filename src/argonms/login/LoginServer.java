@@ -48,11 +48,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Scanner;
 import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.configuration2.PropertiesConfiguration;
+import org.apache.commons.configuration2.ex.ConfigurationException;
 
 //TODO: NOT THREAD SAFE
 /**
@@ -107,48 +108,48 @@ public class LoginServer implements LocalServer {
 	}
 
 	public void init() {
-		Properties prop = new Properties();
+		PropertiesConfiguration prop = new PropertiesConfiguration();
 		String centerIp;
 		int centerPort;
 		String authKey;
 		try {
 			FileReader fr = new FileReader(System.getProperty("argonms.login.config.file", "login.properties"));
-			prop.load(fr);
+			prop.read(fr);
 			fr.close();
-			address = prop.getProperty("argonms.login.host");
-			port = Integer.parseInt(prop.getProperty("argonms.login.port"));
-			usePin = Boolean.parseBoolean(prop.getProperty("argonms.login.pin"));
-			wzType = DataFileType.valueOf(prop.getProperty("argonms.login.data.type"));
+			address = prop.getString("argonms.login.host");
+			port = prop.getInt("argonms.login.port");
+			usePin = prop.getBoolean("argonms.login.pin");
+			wzType = DataFileType.valueOf(prop.getString("argonms.login.data.type"));
 			//wzPath = prop.getProperty("argonms.login.data.dir");
-			preloadAll = Boolean.parseBoolean(prop.getProperty("argonms.login.data.preload"));
-			centerIp = prop.getProperty("argonms.login.center.ip");
-			centerPort = Integer.parseInt(prop.getProperty("argonms.login.center.port"));
-			authKey = prop.getProperty("argonms.login.auth.key");
-			useNio = Boolean.parseBoolean(prop.getProperty("argonms.login.usenio"));
-			rankingPeriod = Integer.parseInt(prop.getProperty("argonms.login.ranking.frequency"));
+			preloadAll = prop.getBoolean("argonms.login.data.preload");
+			centerIp = prop.getString("argonms.login.center.ip");
+			centerPort = prop.getInt("argonms.login.center.port");
+			authKey = prop.getString("argonms.login.auth.key");
+			useNio = prop.getBoolean("argonms.login.usenio");
+			rankingPeriod = prop.getInt("argonms.login.ranking.frequency");
 
-			String temp = prop.getProperty("argonms.login.decoratedWorlds").replaceAll("\\s", "");
+			String temp = prop.getString("argonms.login.decoratedWorlds").replaceAll("\\s", "");
 			if (!temp.isEmpty()) {
 				for (String id : temp.split(",")) {
 					Byte world = Byte.valueOf(Byte.parseByte(id));
-					temp = prop.getProperty("argonms.login.world." + id + ".flag");
+					temp = prop.getString("argonms.login.world." + id + ".flag");
 					if (temp != null)
 						worldFlags.put(world, Byte.valueOf(Byte.parseByte(temp)));
-					temp = prop.getProperty("argonms.login.world." + id + ".message");
+					temp = prop.getString("argonms.login.world." + id + ".message");
 					if (temp != null)
 						worldMessages.put(world, temp);
 				}
 			}
-			temp = prop.getProperty("argonms.login.balloons").trim();
+			temp = prop.getString("argonms.login.balloons").trim();
 			if (!temp.isEmpty())
 				parseBalloonMessages(temp);
-			temp = prop.getProperty("argonms.login.tz");
+			temp = prop.getString("argonms.login.tz");
 			//always set default TimeZone setting last in this block so the
 			//timezone of logged messages that caught exceptions from this block
 			//are consistently inconsistent - i.e. they always use the server's
 			//time zone rather than the intended time zone from config.
 			TimeZone.setDefault(temp.isEmpty() ? TimeZone.getDefault() : TimeZone.getTimeZone(temp));
-		} catch (IOException ex) {
+		} catch (ConfigurationException|IOException ex) {
 			//Do note that the time shown by SimpleFormatter is the server's
 			//time zone, NOT any time zone we intended to use from the config
 			//(because we can't access the config after all!)
@@ -166,13 +167,13 @@ public class LoginServer implements LocalServer {
 		});
 
 		boolean mcdb = (wzType == DataFileType.MCDB);
-		prop = new Properties();
+		prop = new PropertiesConfiguration();
 		try {
 			FileReader fr = new FileReader(System.getProperty("argonms.db.config.file", "db.properties"));
-			prop.load(fr);
+			prop.read(fr);
 			fr.close();
 			DatabaseManager.setProps(prop, mcdb, useNio);
-		} catch (IOException ex) {
+		} catch (ConfigurationException|IOException ex) {
 			LOG.log(Level.SEVERE, "Could not load database properties!", ex);
 			System.exit(3);
 			return;
