@@ -9,12 +9,12 @@ services:
     restart: always
     ports:
       - "3306:3306"
-    environment:
-      MYSQL_USER: root
-      MYSQL_ROOT_PASSWORD: testing
-      MYSQL_DATABASE: argonms
     volumes:
       - argonms-volume:/var/lib/mysql
+    environment:
+      - MYSQL_USER
+      - MYSQL_PASSWORD
+      - MYSQL_DATABASE
   center:
     build:
       context: .
@@ -23,7 +23,10 @@ services:
       - ./:/app
       # create a new target volume and copy the container defaults into it
       - /app/target
-
+    environment:
+      - MYSQL_USER
+      - MYSQL_PASSWORD
+      - MYSQL_DATABASE
     depends_on:
       - db
     ports:
@@ -44,6 +47,10 @@ services:
       - ./:/app
       - $DATA_DIR:/app/wz
       - /app/target
+    environment:
+      - MYSQL_USER
+      - MYSQL_PASSWORD
+      - MYSQL_DATABASE
     depends_on:
       - center
       - db
@@ -59,6 +66,9 @@ services:
       - $DATA_DIR:/app/wz
       - /app/target
     environment:
+      - MYSQL_USER
+      - MYSQL_PASSWORD
+      - MYSQL_DATABASE
       - DATA_DIR=wz/
       - SCRIPT_DIR=${SCRIPT_DIR:-scripts/example}
       - ARGONMS_GAME_0_HOST=${ARGONMS_GAME_0_HOST:-localhost}
