@@ -42,13 +42,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Properties;
 import java.util.Scanner;
 import java.util.TimeZone;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.configuration2.PropertiesConfiguration;
+import org.apache.commons.configuration2.ex.ConfigurationException;
 
 /**
  *
@@ -76,27 +77,27 @@ public class CenterServer {
 	}
 
 	public void init() {
-		Properties prop = new Properties();
+		PropertiesConfiguration prop = new PropertiesConfiguration();
 		int port;
 		String authKey;
 		int telnetPort;
 		boolean useNio;
 		try {
 			FileReader fr = new FileReader(System.getProperty("argonms.center.config.file", "center.properties"));
-			prop.load(fr);
+			prop.read(fr);
 			fr.close();
-			port = Integer.parseInt(prop.getProperty("argonms.center.port"));
-			authKey = prop.getProperty("argonms.center.auth.key");
-			telnetPort = Integer.parseInt(prop.getProperty("argonms.center.telnet"));
-			useNio = Boolean.parseBoolean(prop.getProperty("argonms.center.usenio"));
+			port = prop.getInt("argonms.center.port");
+			authKey = prop.getString("argonms.center.auth.key");
+			telnetPort = prop.getInt("argonms.center.telnet");
+			useNio = prop.getBoolean("argonms.center.usenio");
 
-			String temp = prop.getProperty("argonms.center.tz");
+			String temp = prop.getString("argonms.center.tz");
 			//always set default TimeZone setting last in this block so the
 			//timezone of logged messages that caught exceptions from this block
 			//are consistently inconsistent - i.e. they always use the server's
 			//time zone rather than the intended time zone from config.
 			TimeZone.setDefault(temp.isEmpty() ? TimeZone.getDefault() : TimeZone.getTimeZone(temp));
-		} catch (IOException ex) {
+		} catch (ConfigurationException|IOException ex) {
 			//Do note that the time shown by SimpleFormatter is the server's
 			//time zone, NOT any time zone we intended to use from the config
 			//(because we can't access the config after all!)
@@ -104,13 +105,13 @@ public class CenterServer {
 			System.exit(2);
 			return;
 		}
-		prop = new Properties();
+		prop = new PropertiesConfiguration();
 		try {
 			FileReader fr = new FileReader(System.getProperty("argonms.db.config.file", "db.properties"));
-			prop.load(fr);
+			prop.read(fr);
 			fr.close();
 			DatabaseManager.setProps(prop, false, useNio);
-		} catch (IOException ex) {
+		} catch (ConfigurationException|IOException ex) {
 			LOG.log(Level.SEVERE, "Could not load database properties!", ex);
 			System.exit(3);
 			return;

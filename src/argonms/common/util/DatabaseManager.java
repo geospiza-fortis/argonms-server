@@ -30,12 +30,13 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Properties;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.configuration2.PropertiesConfiguration;
+
 
 //TODO: abstract singleton class?
 /**
@@ -98,19 +99,19 @@ public final class DatabaseManager {
 		}
 	}
 
-	public static void setProps(Properties props, boolean useMcdb, boolean nio) throws SQLException {
-		driver = props.getProperty("driver");
+	public static void setProps(PropertiesConfiguration props, boolean useMcdb, boolean nio) throws SQLException {
+		driver = props.getString("driver");
 		try {
 			Class.forName(driver); //load the jdbc driver
 		} catch (ClassNotFoundException e) {
 			throw new SQLException("Unable to find JDBC library. Do you have MySQL Connector/J (if using default JDBC driver)?"/*, e*/);
 		}
-		String url = props.getProperty("url");
-		String user = props.getProperty("user");
-		String password = props.getProperty("password");
+		String url = props.getString("url");
+		String user = props.getString("user");
+		String password = props.getString("password");
 		connections.put(DatabaseType.STATE, nio ? new ThreadLocalConnections(url, user, password) : new CachedConnectionPool(url, user, password));
 		if (useMcdb) {
-			String wz = props.getProperty("mcdb");
+			String wz = props.getString("mcdb");
 			connections.put(DatabaseType.WZ, nio ? new ThreadLocalConnections(wz, user, password) : new CachedConnectionPool(wz, user, password));
 		}
 	}

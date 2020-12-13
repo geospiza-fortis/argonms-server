@@ -23,7 +23,7 @@ set -e
 cd "$(dirname "${BASH_SOURCE[0]}")"/..
 prefix="conf/testing"
 data_dir=${DATA_DIR:-wz/}
-script_dir=${SCRIPT_DIR:-scripts/example}
+script_dir=${SCRIPT_DIR:-scripts/example/}
 
 export MAVEN_OPTS="-Xmx600m"
 mvn exec:java -Dexec.mainClass="argonms.game.GameServer" \

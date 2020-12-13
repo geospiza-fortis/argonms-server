@@ -55,7 +55,6 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.TimeZone;
@@ -63,6 +62,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.configuration2.PropertiesConfiguration;
+import org.apache.commons.configuration2.ex.ConfigurationException;
 
 /**
  *
@@ -116,36 +117,36 @@ public class ShopServer implements LocalServer {
 	}
 
 	public void init() {
-		Properties prop = new Properties();
+		PropertiesConfiguration prop = new PropertiesConfiguration();
 		String centerIp;
 		int centerPort;
 		String authKey;
 		try {
 			FileReader fr = new FileReader(System.getProperty("argonms.shop.config.file", "shop.properties"));
-			prop.load(fr);
+			prop.read(fr);
 			fr.close();
-			address = prop.getProperty("argonms.shop.host");
-			port = Integer.parseInt(prop.getProperty("argonms.shop.port"));
-			wzType = DataFileType.valueOf(prop.getProperty("argonms.shop.data.type"));
+			address = prop.getString("argonms.shop.host");
+			port = prop.getInt("argonms.shop.port");
+			wzType = DataFileType.valueOf(prop.getString("argonms.shop.data.type"));
 			//wzPath = prop.getProperty("argonms.shop.data.dir");
-			preloadAll = Boolean.parseBoolean(prop.getProperty("argonms.shop.data.preload"));
-			centerIp = prop.getProperty("argonms.shop.center.ip");
-			centerPort = Integer.parseInt(prop.getProperty("argonms.shop.center.port"));
-			authKey = prop.getProperty("argonms.shop.auth.key");
-			useNio = Boolean.parseBoolean(prop.getProperty("argonms.shop.usenio"));
+			preloadAll = prop.getBoolean("argonms.shop.data.preload");
+			centerIp = prop.getString("argonms.shop.center.ip");
+			centerPort = prop.getInt("argonms.shop.center.port");
+			authKey = prop.getString("argonms.shop.auth.key");
+			useNio = prop.getBoolean("argonms.shop.usenio");
 
-			ticker = prop.getProperty("argonms.shop.tickermessage");
+			ticker = prop.getString("argonms.shop.tickermessage");
 
 			commodityOverridePath = System.getProperty("argonms.shop.commodityoverride.file", "cashshopcommodityoverrides.txt");
 			limitedCommodityPath = System.getProperty("argonms.shop.limitedcommodity.file", "cashshoplimitedcommodities.txt");
 
-			String temp = prop.getProperty("argonms.shop.tz");
+			String temp = prop.getString("argonms.shop.tz");
 			//always set default TimeZone setting last in this block so the
 			//timezone of logged messages that caught exceptions from this block
 			//are consistently inconsistent - i.e. they always use the server's
 			//time zone rather than the intended time zone from config.
 			TimeZone.setDefault(temp.isEmpty() ? TimeZone.getDefault() : TimeZone.getTimeZone(temp));
-		} catch (IOException ex) {
+		} catch (ConfigurationException|IOException ex) {
 			//Do note that the time shown by SimpleFormatter is the server's
 			//time zone, NOT any time zone we intended to use from the config
 			//(because we can't access the config after all!)
@@ -163,13 +164,13 @@ public class ShopServer implements LocalServer {
 		});
 
 		boolean mcdb = (wzType == DataFileType.MCDB);
-		prop = new Properties();
+		prop = new PropertiesConfiguration();
 		try {
 			FileReader fr = new FileReader(System.getProperty("argonms.db.config.file", "db.properties"));
-			prop.load(fr);
+			prop.read(fr);
 			fr.close();
 			DatabaseManager.setProps(prop, mcdb, useNio);
-		} catch (IOException ex) {
+		} catch (ConfigurationException|IOException ex) {
 			LOG.log(Level.SEVERE, "Could not load database properties!", ex);
 			System.exit(3);
 			return;
