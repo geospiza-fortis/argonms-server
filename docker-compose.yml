@@ -1,5 +1,8 @@
 version: "3.4"
 
+volumes:
+  argonms-volume:
+
 services:
   db:
     image: mysql:5.7
@@ -10,6 +13,8 @@ services:
       MYSQL_USER: root
       MYSQL_ROOT_PASSWORD: testing
       MYSQL_DATABASE: argonms
+    volumes:
+      - argonms-volume:/var/lib/mysql
   center:
     build:
       context: .
@@ -29,7 +34,6 @@ services:
         mysql -h db --password=testing argonms < sql/argon.sql &&
         mysql -h db --password=testing argonms < sql/default_reactor_drops.sql &&
         mysql -h db --password=testing argonms < sql/default_shops.sql &&
-        bin/insert_account.sh testing testing &&
         bin/launch_center.sh
       "
   login:
