@@ -12,6 +12,7 @@ services:
     volumes:
       - argonms-volume:/var/lib/mysql
     environment:
+      - MYSQL_RANDOM_ROOT_PASSWORD=true
       - MYSQL_USER
       - MYSQL_PASSWORD
       - MYSQL_DATABASE
