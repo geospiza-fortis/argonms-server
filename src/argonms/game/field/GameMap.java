@@ -145,13 +145,23 @@ public class GameMap {
 		for (Map.Entry<Byte, PortalData> portal : stats.getPortals().entrySet())
 			if (portal.getValue().getPortalType() == 6)
 				mysticDoorSpots.add(portal.getKey());
+		// There are two maps that have less than 6 door spots in v62: Lith
+		// Harbor (104000000, 5 spots) and Haunted House (682000000, 3 spots).
+		// The latter may have issues with the door spawning on top of existing
+		// portals.
 		if (mysticDoorSpots.isEmpty()) {
 			mysticDoorPortalIds = null;
 		} else {
-			assert mysticDoorSpots.size() == 6;
 			mysticDoorPortalIds = new byte[6];
-			for (int i = 0; i < 6; i++)
-				mysticDoorPortalIds[i] = mysticDoorSpots.pollFirst().byteValue();
+			for (int i = 0; i < 6; i++) {
+				Byte mysticDoorPortalId = mysticDoorSpots.pollFirst();
+				if (mysticDoorPortalId != null) {
+					mysticDoorPortalIds[i] = mysticDoorPortalId;
+				} else {
+					// use the last portal for the remainder
+					mysticDoorPortalIds[i] = mysticDoorPortalIds[i-1];
+				}
+			}
 		}
 	}
 
