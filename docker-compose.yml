@@ -71,7 +71,7 @@ services:
       - MYSQL_PASSWORD
       - MYSQL_DATABASE
       - DATA_DIR=wz/
-      - SCRIPT_DIR=${SCRIPT_DIR:-scripts/example}
+      - SCRIPT_DIR
       - ARGONMS_GAME_0_HOST=${ARGONMS_GAME_0_HOST:-localhost}
     depends_on:
       - center
