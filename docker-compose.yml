@@ -16,6 +16,18 @@ services:
       - MYSQL_USER
       - MYSQL_PASSWORD
       - MYSQL_DATABASE
+  adminer:
+    image: adminer:latest
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - "8080:8080"
+    environment:
+      - ADMINER_DEFAULT_SERVER=db
+      - ADMINER_DEFAULT_TYPE=mysql
+      - ADMINER_DEFAULT_PORT=3306
+      - ADMINER_DEFAULT_DB=${MYSQL_DATABASE}
   center:
     build:
       context: .
