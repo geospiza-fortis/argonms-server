@@ -31,6 +31,13 @@ To insert a new account:
 docker-compose run --rm center bin/insert_account.sh <NAME> <PASSWORD>
 ```
 
+[`adminer`](https://www.adminer.org/) is shipped by default on port 8080. This
+can be used to modify the database by hand. To run this when the server is down:
+
+```bash
+docker-compose run --rm  --service-ports adminer
+```
+
 After exiting docker-compose, remove any dangling services:
 
 ```bash
@@ -57,8 +64,5 @@ address. Forward the appropriate ports from the docker-compose file (8383 for
 the center server, 8484 for the login server, and 7575 for the game server).
 
 If you are using Docker for Windows using WSL, you should use the IPv4 address
-of the WSL interface (`Ethernet adapter vEthernet (WSL)`).
-
-```powershell
-ipconfig
-```
+of the WSL interface (`Ethernet adapter vEthernet (WSL)`). Use `ipconfig` to
+find the interface.
