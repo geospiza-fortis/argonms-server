@@ -28,8 +28,13 @@ docker-compose up
 To insert a new account:
 
 ```bash
-docker-compose run --rm center bin/insert_account.sh <NAME> <PASSWORD>
+docker-compose run --rm center bin/insert_account.sh <NAME> <PASSWORD> <GM_LEVEL>
 ```
+
+To make a GM account, set `GM_LEVEL > 100` e.g. 200. To make a normal account,
+set it to 0 or omit it from the command. See
+[`argonms.common.UserPriviledges`](https://github.com/geospiza-fortis/argonms-server/blob/master/src/argonms/common/UserPrivileges.java)
+for more details.
 
 [`adminer`](https://www.adminer.org/) is shipped by default on port 8080. This
 can be used to modify the database by hand. To run this when the server is down:
@@ -59,7 +64,7 @@ docker-compose down -v
 
 ## hosting configuration
 
-Set `ARGONMS_GAME_0_HOST` and modify the localhost client to your public IP
+Set `ARGONMS_HOST` and modify the localhost client to your public IP
 address. Forward the appropriate ports from the docker-compose file (8383 for
 the center server, 8484 for the login server, and 7575 for the game server).
 
