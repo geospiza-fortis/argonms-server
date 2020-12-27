@@ -50,6 +50,7 @@ services:
         bin/run_sql.sh < sql/argon.sql &&
         bin/run_sql.sh < sql/default_reactor_drops.sql &&
         bin/run_sql.sh < sql/default_shops.sql &&
+        bin/run_sql.sh < sql/default_cash_shop.sql &&
         bin/launch_center.sh
       "
   login:
@@ -91,3 +92,22 @@ services:
     ports:
       - "7575:7575"
     command: bash -c "sleep 15 && bin/launch_game.sh"
+  shop:
+    build:
+      context: .
+    restart: always
+    volumes:
+      - ./:/app
+      - $DATA_DIR:/app/wz
+      - /app/target
+    environment:
+      - MYSQL_USER
+      - MYSQL_PASSWORD
+      - MYSQL_DATABASE
+      - DATA_DIR=wz/
+    depends_on:
+      - center
+      - db
+    ports:
+      - "8787:8787"
+    command: bash -c "sleep 15 && bin/launch_shop.sh"

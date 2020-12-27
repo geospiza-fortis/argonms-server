@@ -20,12 +20,7 @@
 -- This script needs to be executed only if the shop server is enabled.
 --
 
-DROP TABLE IF EXISTS `cashshoplimitedcommodities`;
- DROP TABLE IF EXISTS `cashshopcouponusers`;
- DROP TABLE IF EXISTS `cashshopcouponitems`;
-DROP TABLE IF EXISTS `cashshopcoupons`;
-
-CREATE TABLE `cashshopcoupons` (
+CREATE TABLE IF NOT EXISTS `cashshopcoupons` (
   `entryid` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `code` VARCHAR(65508) CHARACTER SET latin1 NOT NULL, /* InnoDB limit; client supports up to 65529 */
   `maplepoints` INT(11),
@@ -36,7 +31,7 @@ CREATE TABLE `cashshopcoupons` (
   UNIQUE KEY (`code`(767))
 ) ENGINE=InnoDB;
 
-CREATE TABLE `cashshopcouponitems` (
+CREATE TABLE IF NOT EXISTS `cashshopcouponitems` (
   `entryid` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `couponentryid` INT(11) UNSIGNED,
   `sn` INT(11) NOT NULL,
@@ -45,7 +40,7 @@ CREATE TABLE `cashshopcouponitems` (
   CONSTRAINT FOREIGN KEY (`couponentryid`) REFERENCES `cashshopcoupons` (`entryid`) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
-CREATE TABLE `cashshopcouponusers` (
+CREATE TABLE IF NOT EXISTS `cashshopcouponusers` (
   `entryid` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `couponentryid` INT(11) UNSIGNED,
   `accountid` INT(11) NOT NULL,
@@ -54,7 +49,7 @@ CREATE TABLE `cashshopcouponusers` (
   CONSTRAINT FOREIGN KEY (`couponentryid`) REFERENCES `cashshopcoupons` (`entryid`) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
-CREATE TABLE `cashshoplimitedcommodities` (
+CREATE TABLE IF NOT EXISTS `cashshoplimitedcommodities` (
   `entryid` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `itemid` INT(11) NOT NULL,
   `used` INT(11) NOT NULL DEFAULT 0,
