@@ -85,7 +85,7 @@ services:
       - MYSQL_DATABASE
       - DATA_DIR=wz/
       - SCRIPT_DIR
-      - ARGONMS_GAME_0_HOST=${ARGONMS_GAME_0_HOST:-localhost}
+      - ARGONMS_GAME_0_HOST=${ARGONMS_HOST:-localhost}
     depends_on:
       - center
       - db
@@ -105,7 +105,7 @@ services:
       - MYSQL_PASSWORD
       - MYSQL_DATABASE
       - DATA_DIR=wz/
-      - ARGONMS_SHOP_HOST=${ARGONMS_SHOP_HOST:-localhost}
+      - ARGONMS_SHOP_HOST=${ARGONMS_HOST:-localhost}
     depends_on:
       - center
       - db
