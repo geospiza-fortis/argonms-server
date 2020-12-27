@@ -105,6 +105,7 @@ services:
       - MYSQL_PASSWORD
       - MYSQL_DATABASE
       - DATA_DIR=wz/
+      - ARGONMS_SHOP_HOST=${ARGONMS_SHOP_HOST:-localhost}
     depends_on:
       - center
       - db

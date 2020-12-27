@@ -20,6 +20,18 @@
 -- This script needs to be executed only if the shop server is enabled.
 --
 
+-- Keep track of cash for each account.
+CREATE TABLE IF NOT EXISTS `cashshopbalance` (
+  `entryid` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `accountid` INT(11) NOT NULL,
+  `paypalnx` INT(11) NOT NULL,
+  `maplepoints` INT(11) NOT NULL,
+  `gamecardnx` INT(11) NOT NULL,
+  PRIMARY KEY (`entryid`),
+  CONSTRAINT FOREIGN KEY (`accountid`) REFERENCES `accounts` (`id`) ON DELETE CASCADE,
+  UNIQUE (`accountid`)
+) ENGINE=InnoDB;
+
 CREATE TABLE IF NOT EXISTS `cashshopcoupons` (
   `entryid` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `code` VARCHAR(65508) CHARACTER SET latin1 NOT NULL, /* InnoDB limit; client supports up to 65529 */
