@@ -48,7 +48,7 @@ The data for the server is persisted inside of a
 [volume](https://docs.docker.com/storage/volumes/). To inspect the contents:
 
 ```bash
-docker inspect argonms-server_argonms-volume
+docker volume inspect argonms-server_argonms-volume
 ```
 
 To delete all persisted data:

@@ -32,4 +32,4 @@ mvn exec:java -Dexec.mainClass="argonms.shop.ShopServer" \
     -Dargonms.shop.blockedserials.file=$prefix/cashshopblockedserialnumbers.txt \
     -Dargonms.shop.commodityoverride.file=$prefix/cashshopcommodityoverrides.txt \
     -Dargonms.shop.limitedcommodity.file=$prefix/cashshoplimitedcommodities.txt \
-    -Dargonms.data.dir=${DATA_DIR}
+    -Dargonms.data.dir=${data_dir}

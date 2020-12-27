@@ -294,13 +294,23 @@ public class ShopCharacter extends LoggedInPlayer {
 	private void updateDbAccount(Connection con) throws SQLException {
 		PreparedStatement ps = null;
 		try {
-			ps = con.prepareStatement("UPDATE `accounts` SET `characters` = ?, `paypalnx` = ?, `maplepoints` = ?, `gamecardnx` = ? WHERE `id` = ?");
+			// split this into two statements; one for increasing max characters
+			// and one for nx
+			ps = con.prepareStatement("UPDATE `accounts` SET `characters` = ? WHERE `id` = ?");
 			ps.setByte(1, maxCharacters);
+			ps.setInt(2, client.getAccountId());
+			ps.executeUpdate();
+			ps = con.prepareStatement(
+				"INSERT INTO `cashshopbalance` (accountid, paypalnx, maplepoints, gamecardnx) "
+				+ "VALUES (?, ?, ?, ?) "
+				+ "ON DUPLICATE KEY UPDATE paypalnx=VALUES(paypalnx), maplepoints=VALUES(maplepoints), gamecardnx=VALUES(gamecardnx)"
+			);
+			ps.setInt(1, client.getAccountId());
 			ps.setInt(2, getCashShopCurrency(PAYPAL_NX));
 			ps.setInt(3, getCashShopCurrency(MAPLE_POINTS));
 			ps.setInt(4, getCashShopCurrency(GAME_CARD_NX));
-			ps.setInt(5, client.getAccountId());
 			ps.executeUpdate();
+			con.commit();
 		} catch (SQLException e) {
 			throw new SQLException("Failed to save account-info of character " + name, e);
 		} finally {
@@ -413,8 +423,11 @@ public class ShopCharacter extends LoggedInPlayer {
 		ResultSet rs = null;
 		try {
 			con = DatabaseManager.getConnection(DatabaseType.STATE);
-			ps = con.prepareStatement("SELECT `c`.*,`a`.`name`,`a`.`characters`,`a`.`birthday`,`a`.`paypalnx`,`a`.`maplepoints`,`a`.`gamecardnx` "
-					+ "FROM `characters` `c` LEFT JOIN `accounts` `a` ON `c`.`accountid` = `a`.`id` "
+			ps = con.prepareStatement("SELECT `c`.*,`a`.`name`,`a`.`characters`,`a`.`birthday`,"
+					+ "COALESCE(`b`.`paypalnx`,0) AS paypalnx,COALESCE(`b`.`maplepoints`,0) AS maplepoints, COALESCE(`b`.`gamecardnx`) as gamecardnx "
+					+ "FROM `characters` `c` "
+					+ "LEFT JOIN `accounts` `a` ON `c`.`accountid` = `a`.`id` "
+					+ "LEFT JOIN `cashshopbalance` `b` ON `b`.`accountid` = `a`.`id`"
 					+ "WHERE `c`.`id` = ?");
 			ps.setInt(1, id);
 			rs = ps.executeQuery();
