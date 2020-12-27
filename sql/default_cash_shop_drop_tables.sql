@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS `cashshopbalance`;
 DROP TABLE IF EXISTS `cashshoplimitedcommodities`;
 DROP TABLE IF EXISTS `cashshopcouponusers`;
 DROP TABLE IF EXISTS `cashshopcouponitems`;
