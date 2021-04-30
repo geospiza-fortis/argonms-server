@@ -24,7 +24,7 @@ public class NXStringDataLoader extends StringDataLoader {
                 int id = Integer.parseInt(baseNode.getName());
                 NXNode itemName = baseNode.getChild("name");
                 if (itemName != null)
-                    itemMsgs.put(id, itemName.get().toString());
+                    itemNames.put(id, itemName.get().toString());
                 NXNode itemDescription = baseNode.getChild("desc");
                 if (itemDescription != null)
                     itemMsgs.put(id, itemDescription.get().toString());
@@ -35,7 +35,7 @@ public class NXStringDataLoader extends StringDataLoader {
                     int id = Integer.parseInt(node.getName());
                     NXNode itemName = node.getChild("name");
                     if (itemName != null)
-                        itemMsgs.put(id, itemName.get().toString());
+                        itemNames.put(id, itemName.get().toString());
                 }
             }
 
@@ -47,7 +47,7 @@ public class NXStringDataLoader extends StringDataLoader {
                         mapNames.put(id, mapName.get().toString());
                     NXNode streetName = type.getChild("streetName");
                     if (streetName != null)
-                        mapNames.put(id, streetName.get().toString());
+                        streetNames.put(id, streetName.get().toString());
                 }
             }
 
@@ -63,6 +63,13 @@ public class NXStringDataLoader extends StringDataLoader {
                 NXNode npcName = baseNode.getChild("name");
                 if (npcName != null)
                     npcNames.put(id, npcName.get().toString());
+            }
+
+            for (NXNode baseNode : file.resolve("Skill.img")) {
+                int id = Integer.parseInt(baseNode.getName());
+                NXNode skillName = baseNode.getChild("name");
+                if (skillName != null)
+                    skillNames.put(id, skillName.get().toString());
             }
         } catch (IOException e) {
             e.printStackTrace();
