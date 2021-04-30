@@ -131,6 +131,9 @@ public abstract class StringDataLoader {
 				case MCDB:
 					instance = new McdbStringDataLoader();
 					break;
+				case NX:
+					instance = new NXStringDataLoader(wzPath);
+					break;
 			}
 		}
 	}
