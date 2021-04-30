@@ -23,5 +23,5 @@ package argonms.common.loading;
  * @author GoldenKevin
  */
 public enum DataFileType {
-	KVJ, MCDB
+	KVJ, MCDB, NX
 }
