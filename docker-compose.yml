@@ -8,7 +8,10 @@ services:
     image: mysql:5.7
     restart: always
     ports:
-      - "3306:3306"
+      # NOTE: we're not forwarding this port to the host. Adminer on port 8080
+      # should suffice for most administration, but modify this to 3306:3306 if
+      # you need to access the database locally
+      - 3306
     volumes:
       - argonms-volume:/var/lib/mysql
     environment:
@@ -53,31 +56,13 @@ services:
         bin/run_sql.sh < sql/default_cash_shop.sql &&
         bin/launch_center.sh
       "
-  login:
+  login: &server
     build:
       context: .
     restart: always
     volumes:
       - ./:/app
-      - $DATA_DIR:/app/wz
-      - /app/target
-    environment:
-      - MYSQL_USER
-      - MYSQL_PASSWORD
-      - MYSQL_DATABASE
-    depends_on:
-      - center
-      - db
-    ports:
-      - "8484:8484"
-    command: bash -c "sleep 15 && bin/launch_login.sh"
-  game:
-    build:
-      context: .
-    restart: always
-    volumes:
-      - ./:/app
-      - $DATA_DIR:/app/wz
+      - ${DATA_DIR?data directory not configured}:/app/wz
       - /app/target
     environment:
       - MYSQL_USER
@@ -85,30 +70,20 @@ services:
       - MYSQL_DATABASE
       - DATA_DIR=wz/
       - SCRIPT_DIR
-      - ARGONMS_GAME_0_HOST=${ARGONMS_HOST:-localhost}
+      - ARGONMS_HOST=${ARGONMS_HOST:-localhost}
     depends_on:
       - center
       - db
     ports:
+      - "8484:8484"
+    command: bash -c "sleep 15 && bin/launch_login.sh"
+  game:
+    <<: *server
+    ports:
       - "7575:7575"
     command: bash -c "sleep 15 && bin/launch_game.sh"
   shop:
-    build:
-      context: .
-    restart: always
-    volumes:
-      - ./:/app
-      - $DATA_DIR:/app/wz
-      - /app/target
-    environment:
-      - MYSQL_USER
-      - MYSQL_PASSWORD
-      - MYSQL_DATABASE
-      - DATA_DIR=wz/
-      - ARGONMS_SHOP_HOST=${ARGONMS_HOST:-localhost}
-    depends_on:
-      - center
-      - db
+    <<: *server
     ports:
       - "8787:8787"
     command: bash -c "sleep 15 && bin/launch_shop.sh"

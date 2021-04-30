@@ -71,3 +71,21 @@ the center server, 8484 for the login server, and 7575 for the game server).
 If you are using Docker for Windows using WSL, you should use the IPv4 address
 of the WSL interface (`Ethernet adapter vEthernet (WSL)`). Use `ipconfig` to
 find the interface.
+
+## debugging
+
+### `/usr/bin/env: ‘bash\r’: No such file or directory`
+
+Window line endings were introduced when saving these files. To fix this, run
+dos2unix.
+
+```bash
+# launch any container where the bin/ directory is mounted
+docker-compose run --rm center bash
+
+apt install dos2unix
+dos2unix bin/*
+
+# bring down the containers
+docker-compose down
+```
