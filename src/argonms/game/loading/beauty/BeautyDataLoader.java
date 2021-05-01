@@ -66,6 +66,9 @@ public abstract class BeautyDataLoader {
 				case MCDB:
 					instance = new McdbBeautyDataLoader();
 					break;
+				case NX:
+					instance = new NXBeautyDataLoader(wzPath);
+					break;
 			}
 		}
 	}
