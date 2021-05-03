@@ -45,4 +45,55 @@ public final class StatEffect {
 	private StatEffect() {
 		//uninstantiable...
 	}
+
+	public static byte getByName(String name) {
+		byte stat = -1;
+
+		switch (name) {
+			case "incSTR":
+				stat = 0;
+				break;
+			case "incDEX":
+				stat = 1;
+				break;
+			case "incINT":
+				stat = 2;
+				break;
+			case "incLUK":
+				stat = 3;
+				break;
+			case "incPAD":
+				stat = 4;
+				break;
+			case "incPDD":
+				stat = 5;
+				break;
+			case "incMAD":
+				stat = 6;
+				break;
+			case "incMDD":
+				stat = 7;
+				break;
+			case "incACC":
+				stat = 8;
+				break;
+			case "incEVA":
+				stat = 9;
+				break;
+			case "incMHP":
+				stat = 10;
+				break;
+			case "incMMP":
+				stat = 11;
+				break;
+			case "incSpeed":
+				stat = 12;
+				break;
+			case "incJump":
+				stat = 13;
+				break;
+		}
+
+		return stat;
+	}
 }

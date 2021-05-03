@@ -56,7 +56,6 @@ public abstract class ItemDataLoader {
 	protected final Map<Integer, List<Integer>> skills;
 	protected final Map<Integer, Double> unitPrice;
 	protected final Map<Integer, short[]> reqStats;
-	protected final Map<Integer, List<Integer>> scrollReqs;
 	protected final Map<Integer, ItemEffectsData> statEffects;
 	protected final Map<Integer, Integer> triggerItem;
 	protected final Map<Integer, Byte> tuc;
@@ -91,7 +90,6 @@ public abstract class ItemDataLoader {
 		skills = new HashMap<Integer, List<Integer>>();
 		unitPrice = new HashMap<Integer, Double>();
 		reqStats = new HashMap<Integer, short[]>();
-		scrollReqs = new HashMap<Integer, List<Integer>>();
 		statEffects = new HashMap<Integer, ItemEffectsData>();
 		triggerItem = new HashMap<Integer, Integer>();
 		tuc = new HashMap<Integer, Byte>();
@@ -311,6 +309,9 @@ public abstract class ItemDataLoader {
 					break;
 				case MCDB:
 					instance = new McdbItemDataLoader();
+					break;
+				case NX:
+					instance = new NXItemDataLoader(wzPath);
 					break;
 			}
 		}

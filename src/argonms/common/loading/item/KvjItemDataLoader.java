@@ -221,9 +221,6 @@ public class KvjItemDataLoader extends ItemDataLoader {
 				case UPGRADE_SLOTS:
 					tuc.put(oId, Byte.valueOf(reader.readByte()));
 					break;
-				case SCROLL_REQUIREMENTS:
-					scrollReqs.put(oId, processScrollReqs(reader));
-					break;
 				case ITEM_EFFECT:
 					statEffects.put(oId, processEffect(itemid, reader));
 					break;
@@ -268,13 +265,6 @@ public class KvjItemDataLoader extends ItemDataLoader {
 		byte stat = reader.readByte();
 		short value = reader.readShort();
 		reqStats.get(oId)[stat] = value;
-	}
-
-	private List<Integer> processScrollReqs(LittleEndianReader reader) {
-		List<Integer> reqs = new ArrayList<Integer>();
-		for (int i = reader.readInt(); i > 0; i--)
-			reqs.add(Integer.valueOf(reader.readInt()));
-		return reqs;
 	}
 
 	private int[] processSummon(LittleEndianReader reader) {
