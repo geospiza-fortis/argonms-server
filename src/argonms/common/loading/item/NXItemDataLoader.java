@@ -156,9 +156,9 @@ public class NXItemDataLoader extends ItemDataLoader {
                     case "incMMP":
                     case "incSpeed":
                     case "incJump":
-                        String name = propertyNode.getName();
-                        short stat = Short.parseShort(propertyNode.get().toString());
-                        incStats[StatEffect.getByName(name)] = stat;
+                        String incName = propertyNode.getName();
+                        short incStat = Short.parseShort(propertyNode.get().toString());
+                        incStats[StatEffect.getByName(incName)] = incStat;
                         break;
                     case "success":
                         int success = Integer.parseInt(propertyNode.get().toString());
@@ -224,10 +224,10 @@ public class NXItemDataLoader extends ItemDataLoader {
                         if (!reqStats.containsKey(itemId))
                             reqStats.put(itemId, new short[16]);
 
-                        String name2 = propertyNode.getName();
-                        short value = Short.parseShort(propertyNode.get().toString());
+                        String reqName = propertyNode.getName();
+                        short reqStat = Short.parseShort(propertyNode.get().toString());
 
-                        // this.reqStats.get(itemId)[StatEffect.getByName(name2)];
+                        this.reqStats.get(itemId)[StatEffect.getByName(reqName)] = reqStat;
                         break;
                     case "tuc":
                         byte tuc = Byte.parseByte(propertyNode.get().toString()); // TODO: Test. Not sure if this works.

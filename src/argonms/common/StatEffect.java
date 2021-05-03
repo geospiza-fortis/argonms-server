@@ -51,15 +51,19 @@ public final class StatEffect {
 
 		switch (name) {
 			case "incSTR":
+			case "reqSTR":
 				stat = 0;
 				break;
 			case "incDEX":
+			case "reqDEX":
 				stat = 1;
 				break;
 			case "incINT":
+			case "reqINT":
 				stat = 2;
 				break;
 			case "incLUK":
+			case "reqLUK":
 				stat = 3;
 				break;
 			case "incPAD":
@@ -91,6 +95,9 @@ public final class StatEffect {
 				break;
 			case "incJump":
 				stat = 13;
+				break;
+			case "reqLevel":
+				stat = 14;
 				break;
 		}
 
