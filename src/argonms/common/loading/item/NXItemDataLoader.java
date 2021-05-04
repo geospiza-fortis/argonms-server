@@ -254,7 +254,6 @@ public class NXItemDataLoader extends ItemDataLoader {
                 case "reqINT":
                 case "reqLUK":
                 case "reqLevel":
-                case "reqJob":
                     if (!reqStats.containsKey(itemId))
                         reqStats.put(itemId, new short[16]);
 
