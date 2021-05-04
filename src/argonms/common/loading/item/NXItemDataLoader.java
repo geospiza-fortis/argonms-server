@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import us.aaronweiss.pkgnx.EagerNXFile;
 import us.aaronweiss.pkgnx.NXFile;
 import us.aaronweiss.pkgnx.NXNode;
@@ -422,9 +423,6 @@ public class NXItemDataLoader extends ItemDataLoader {
                         effect.setConsumeOnPickup();
                     break;
 //                  ## Could not find this one ##
-//                  case "petConsumableBy":
-//                      break;
-//                  ## Could not find this one ##
 //                  case "endEffect":
 //                      break;
                 case "inc":
@@ -433,6 +431,12 @@ public class NXItemDataLoader extends ItemDataLoader {
                     break;
                 default:
                     break;
+            }
+
+            Pattern pattern = Pattern.compile("-?\\d+(\\.\\d+)?");
+            if (pattern.matcher(name).matches()) {
+                int parsedPetId = Integer.parseInt(name);
+                effect.addPetConsumableBy(parsedPetId);
             }
         }
     }
