@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import us.aaronweiss.pkgnx.EagerNXFile;
@@ -125,6 +126,11 @@ public class NXItemDataLoader extends ItemDataLoader {
         NXNode infoNode = node.getChild("info");
         if (infoNode != null) {
             loadInfo(itemId, infoNode);
+        }
+
+        NXNode reqNode = node.getChild("req");
+        if (reqNode != null) {
+            loadReq(itemId, reqNode);
         }
 
         NXNode mobNode = node.getChild("mob");
@@ -297,6 +303,15 @@ public class NXItemDataLoader extends ItemDataLoader {
                 break;
             }
         }
+    }
+
+    private void loadReq(int itemId, NXNode node) {
+        List<Integer> requirements = new ArrayList<>();
+        for (NXNode baseNode : node) {
+            int equipId = Integer.parseInt(baseNode.get().toString());
+            requirements.add(equipId);
+        }
+        scrollReqs.put(itemId, requirements);
     }
 
     private void loadMob(int itemId, NXNode node) {
