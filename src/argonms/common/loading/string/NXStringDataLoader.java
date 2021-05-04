@@ -1,13 +1,17 @@
 package argonms.common.loading.string;
 
+import argonms.common.loading.item.KvjItemDataLoader;
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import us.aaronweiss.pkgnx.EagerNXFile;
 import us.aaronweiss.pkgnx.NXFile;
 import us.aaronweiss.pkgnx.NXNode;
 
 public class NXStringDataLoader extends StringDataLoader {
 
+    private static final Logger LOG = Logger.getLogger(KvjItemDataLoader.class.getName());
     private final String dataPath;
 
     protected NXStringDataLoader(String wzPath) {
@@ -72,7 +76,10 @@ public class NXStringDataLoader extends StringDataLoader {
                     skillNames.put(id, skillName.get().toString());
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.log(Level.WARNING, "Could not load all string data from NX files.", e);
+            return false;
+        } catch (NumberFormatException e) {
+            LOG.log(Level.WARNING, "Could not parse all string data from NX files.", e);
             return false;
         }
 
