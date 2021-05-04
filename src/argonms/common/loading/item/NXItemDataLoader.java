@@ -6,12 +6,15 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import us.aaronweiss.pkgnx.EagerNXFile;
 import us.aaronweiss.pkgnx.NXFile;
 import us.aaronweiss.pkgnx.NXNode;
 
 public class NXItemDataLoader extends ItemDataLoader {
 
+    private static final Logger LOG = Logger.getLogger(KvjItemDataLoader.class.getName());
     private final String dataPath;
 
     protected NXItemDataLoader(String wzPath) {
@@ -54,10 +57,10 @@ public class NXItemDataLoader extends ItemDataLoader {
                 }
              }
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.log(Level.WARNING, "Could not load all item data from NX files.", e);
             return false;
         } catch (NumberFormatException e) {
-            e.printStackTrace();
+            LOG.log(Level.WARNING, "Could not parse all item data from NX files.", e);
             return false;
         }
 
@@ -92,7 +95,7 @@ public class NXItemDataLoader extends ItemDataLoader {
                     NXFile file = new EagerNXFile(dataPath + "Item.nx" + File.separatorChar);
                     return file.resolve("Pet" + File.separatorChar + id + ".img");
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    LOG.log(Level.WARNING, "Could not load NX data for item: " + itemId, e);
                 }
                 break;
             case "Equip":
@@ -101,6 +104,7 @@ public class NXItemDataLoader extends ItemDataLoader {
                     return file.resolve(InventoryTools.getCharCat(itemId) + File.separatorChar + id + ".img");
                 } catch (IOException e) {
                     e.printStackTrace();
+                    LOG.log(Level.WARNING, "Could not load NX data for item: " + itemId, e);
                 }
                 break;
             default:
@@ -108,6 +112,7 @@ public class NXItemDataLoader extends ItemDataLoader {
                     NXFile file = new EagerNXFile(dataPath + "Item.nx" + File.separatorChar);
                     return file.resolve(categoryName + File.separatorChar + id.substring(0, 4) + ".img" + File.separatorChar + id);
                 } catch (IOException e) {
+                    LOG.log(Level.WARNING, "Could not load NX data for item: " + itemId, e);
                     e.printStackTrace();
                 }
                 break;
