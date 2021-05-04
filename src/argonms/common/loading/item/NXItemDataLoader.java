@@ -56,7 +56,11 @@ public class NXItemDataLoader extends ItemDataLoader {
         } catch (IOException e) {
             e.printStackTrace();
             return false;
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return false;
         }
+
         return true;
     }
 
