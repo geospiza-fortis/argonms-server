@@ -269,7 +269,6 @@ public class KvjItemDataLoader extends ItemDataLoader {
 		short value = reader.readShort();
 		reqStats.get(oId)[stat] = value;
 	}
-
 	private List<Integer> processScrollReqs(LittleEndianReader reader) {
 		List<Integer> reqs = new ArrayList<Integer>();
 		for (int i = reader.readInt(); i > 0; i--)

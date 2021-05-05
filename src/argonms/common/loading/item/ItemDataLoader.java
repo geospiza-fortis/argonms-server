@@ -312,6 +312,9 @@ public abstract class ItemDataLoader {
 				case MCDB:
 					instance = new McdbItemDataLoader();
 					break;
+				case NX:
+					instance = new NXItemDataLoader(wzPath);
+					break;
 			}
 		}
 	}
