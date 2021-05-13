@@ -63,6 +63,9 @@ public abstract class NpcDataLoader {
 				case KVJ:
 					instance = new KvjNpcDataLoader(wzPath);
 					break;
+				case NX:
+					instance = new NXNpcDataLoader(wzPath);
+					break;
 				default:
 					instance = new DefaultNpcDataLoader();
 					break;
