@@ -57,7 +57,7 @@ public class NXItemDataLoader extends ItemDataLoader {
                         loaded.add(itemId);
                     }
                 }
-             }
+            }
         } catch (IOException e) {
             LOG.log(Level.WARNING, "Could not load all item data from NX files.", e);
             return false;
@@ -123,7 +123,7 @@ public class NXItemDataLoader extends ItemDataLoader {
         return null;
     }
 
-    private void doWork(int itemId, NXNode node) {
+    private void doWork(int itemId, NXNode node) throws NumberFormatException {
         NXNode infoNode = node.getChild("info");
         if (infoNode != null) {
             loadInfo(itemId, infoNode);
@@ -150,8 +150,9 @@ public class NXItemDataLoader extends ItemDataLoader {
         }
     }
 
-    private void loadInfo(int itemId, NXNode node) {
+    private void loadInfo(int itemId, NXNode node) throws NumberFormatException {
         short[] incStats = new short[16];
+        List<Integer> evolveChoices = new ArrayList<>();
         for (NXNode propertyNode : node) {
             switch (propertyNode.getName()) {
                 case "price":
@@ -283,10 +284,10 @@ public class NXItemDataLoader extends ItemDataLoader {
                     byte life = Byte.parseByte(propertyNode.get().toString()); // TODO: Test. Not sure if this works.
                     this.petPeriod.put(itemId, life);
                     break;
-//                  ## Could not find this one ##
-//                  case "evolve":
-//                      this.petEvolveChoices.put();
-//                      break;
+//              ## Could not find this one ##
+//              case "evolve":
+//                  this.petEvolveChoices.put();
+//                  break;
                 case "tamingMob":
                     byte tamingMob = Byte.parseByte(propertyNode.get().toString()); // TODO: Test. Not sure if this works.
                     this.tamingMobIds.put(itemId, tamingMob);
@@ -305,7 +306,7 @@ public class NXItemDataLoader extends ItemDataLoader {
         }
     }
 
-    private void loadReq(int itemId, NXNode node) {
+    private void loadReq(int itemId, NXNode node) throws NumberFormatException  {
         List<Integer> requirements = new ArrayList<>();
         for (NXNode baseNode : node) {
             int equipId = Integer.parseInt(baseNode.get().toString());
@@ -314,7 +315,7 @@ public class NXItemDataLoader extends ItemDataLoader {
         scrollReqs.put(itemId, requirements);
     }
 
-    private void loadMob(int itemId, NXNode node) {
+    private void loadMob(int itemId, NXNode node) throws NumberFormatException  {
         ArrayList<int[]> mobsToSpawn = new ArrayList<>();
         for (NXNode baseNode : node) {
             int id = Integer.parseInt(baseNode.getChild("id").get().toString());
@@ -327,7 +328,7 @@ public class NXItemDataLoader extends ItemDataLoader {
             summons.put(itemId, mobsToSpawn);
     }
 
-    private void loadSpec(int itemId, NXNode node) {
+    private void loadSpec(int itemId, NXNode node) throws NumberFormatException  {
         ItemEffectsData effect = new ItemEffectsData(itemId);
         for (NXNode baseNode : node) {
             String name = baseNode.getName();
@@ -422,9 +423,6 @@ public class NXItemDataLoader extends ItemDataLoader {
                     if (consumeOnPickup == 1)
                         effect.setConsumeOnPickup();
                     break;
-//                  ## Could not find this one ##
-//                  case "endEffect":
-//                      break;
                 case "inc":
                     int inc = Integer.parseInt(baseNode.get().toString());
                     petFullnessRecover.put(itemId, (byte) inc);
@@ -441,7 +439,7 @@ public class NXItemDataLoader extends ItemDataLoader {
         }
     }
 
-    private void loadInteract(int itemId, NXNode node) {
+    private void loadInteract(int itemId, NXNode node) throws NumberFormatException  {
         for (NXNode baseNode : node) {
             if (!petCommands.containsKey(itemId))
                 petCommands.put(itemId, new HashMap<>());
