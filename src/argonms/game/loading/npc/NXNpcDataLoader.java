@@ -20,8 +20,10 @@ public class NXNpcDataLoader extends NpcDataLoader {
 
     @Override
     public boolean loadAll() {
+        String dir = dataPath + "Npc.nx" + File.separatorChar;
+
         try {
-            NXFile file = new EagerNXFile(dataPath + "Npc.nx" + File.separatorChar);
+            NXFile file = new EagerNXFile(dir);
             for (NXNode baseNode : file.getRoot()) {
                 int npcId = Integer.parseInt(baseNode.getName().replace(".img", ""));
                 doWork(npcId, baseNode);
