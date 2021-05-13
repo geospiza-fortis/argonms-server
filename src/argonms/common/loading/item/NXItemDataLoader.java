@@ -16,7 +16,7 @@ import us.aaronweiss.pkgnx.NXNode;
 
 public class NXItemDataLoader extends ItemDataLoader {
 
-    private static final Logger LOG = Logger.getLogger(KvjItemDataLoader.class.getName());
+    private static final Logger LOG = Logger.getLogger(NXItemDataLoader.class.getName());
     private final String dataPath;
 
     protected NXItemDataLoader(String wzPath) {
